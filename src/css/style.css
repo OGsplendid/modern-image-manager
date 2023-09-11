@@ -27,8 +27,18 @@
   cursor: pointer;
 }
 
+.normal-state {
+  background-color: white;
+  color: black;
+}
+
 .file-container:hover {
   background-color: green;
+  color: white;
+}
+
+.dragged {
+  background-color: purple;
   color: white;
 }
 

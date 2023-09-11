@@ -13,6 +13,7 @@ export default class Dragndrop {
     this.onDrop = this.onDrop.bind(this);
 
     this.fileContainer.addEventListener('click', this.onClick);
+    this.fileContainer.addEventListener('dragleave', Dragndrop.onDragleave);
     this.fileContainer.addEventListener('dragover', Dragndrop.onDragover);
     this.fileContainer.addEventListener('drop', this.onDrop);
     this.fileInput.addEventListener('change', this.onChange);
@@ -21,8 +22,15 @@ export default class Dragndrop {
   static onDragover(e) {
     e.preventDefault();
 
-    e.target.style.backgroundColor = 'purple';
-    e.target.style.color = 'white';
+    e.target.classList.remove('normal-state');
+    e.target.classList.add('dragged');
+  }
+
+  static onDragleave(e) {
+    e.preventDefault();
+
+    e.target.classList.add('normal-state');
+    e.target.classList.remove('dragged');
   }
 
   onDrop(e) {
@@ -30,50 +38,45 @@ export default class Dragndrop {
 
     const file = e.dataTransfer.files && e.dataTransfer.files[0];
     const reader = new FileReader();
+    const id = performance.now();
 
     reader.addEventListener('load', (ev) => {
       const imgObject = {
-        url: ev.target.result,
+        url: `${ev.target.result}#${id}`,
         description: file.name,
       };
       this.gallery.addToArray(imgObject);
       this.gallery.render();
     });
     reader.readAsDataURL(file);
-    e.target.style.backgroundColor = 'white';
-    e.target.style.color = 'black';
+
+    e.target.classList.add('normal-state');
+    e.target.classList.remove('dragged');
   }
 
-  onChange(e) {
+  onChange() {
     const file = this.fileInput.files && this.fileInput.files[0];
 
     if (!file) {
       return;
     }
 
-    const reader = new FileReader();
+    const id = performance.now();
 
+    const reader = new FileReader();
     reader.addEventListener('load', (ev) => {
       const imgObject = {
-        url: ev.target.result,
+        url: `${ev.target.result}#${id}`,
         description: file.name,
       };
       this.gallery.addToArray(imgObject);
       this.gallery.render();
     });
     reader.readAsDataURL(file);
-
-    // const url = URL.createObjectURL(file);
-    // const imgObject = {
-    //   url,
-    //   description: file.name,
-    // };
-    // this.gallery.addToArray(imgObject);
-    // this.gallery.render();
-    // setTimeout(() => URL.revokeObjectURL(url), 0);
+    console.log(id);
   }
 
-  onClick(e) {
+  onClick() {
     this.fileInput.dispatchEvent(new MouseEvent('click'));
   }
 }

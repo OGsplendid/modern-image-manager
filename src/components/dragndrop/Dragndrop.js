@@ -55,6 +55,25 @@ export default class Dragndrop {
   }
 
   onChange() {
+    if (this.fileInput.files && this.fileInput.files.length > 1) {
+      for (let i = 0; i < this.fileInput.files.length; i += 1) {
+        const file = this.fileInput.files[i];
+        const id = performance.now() + i;
+
+        const reader = new FileReader();
+        reader.addEventListener('load', (ev) => {
+          const imgObject = {
+            url: `${ev.target.result}#${id}`,
+            description: file.name,
+          };
+          this.gallery.addToArray(imgObject);
+          this.gallery.render();
+        });
+        reader.readAsDataURL(file);
+      }
+      return;
+    }
+
     const file = this.fileInput.files && this.fileInput.files[0];
 
     if (!file) {
